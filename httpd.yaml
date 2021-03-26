@@ -1,0 +1,26 @@
+- hosts: webserver
+  vars:
+    - webpages_path: "./webpages"
+    - params:
+        files:
+          - '{{ ansible_distribution|lower }}.yaml'
+          - '{{ ansible_os_family|lower }}.yaml'
+  tasks:
+    - name: "Load a variable file based on the OS distribution"
+      include_vars: "{{ lookup('first_found', params, errors='ignore') }}"
+
+    - name: "Install Apache webserver"
+      package: 
+        name: "{{ package }}"
+        state: "present"
+
+    - name: "Transfer webpages"
+      copy: 
+        src: "{{ item }}"
+        dest: "/var/www/html/"
+      with_fileglob: "{{ webpages_path }}/*"
+
+    - name: "Start web server"
+      service: 
+        name: "{{ package }}"
+        state: "started"
