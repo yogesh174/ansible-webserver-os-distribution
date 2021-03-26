@@ -7,7 +7,7 @@
           - '{{ ansible_os_family|lower }}.yaml'
   tasks:
     - name: "Load a variable file based on the OS distribution"
-      include_vars: "{{ lookup('first_found', params, errors='ignore') }}"
+      include_vars: "{{ lookup('first_found', params) }}"
 
     - name: "Install Apache webserver"
       package: 
